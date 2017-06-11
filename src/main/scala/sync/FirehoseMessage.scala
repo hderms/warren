@@ -2,11 +2,7 @@ package sync
 
 import java.util.{HashMap => JavaHashMap}
 
-import com.sksamuel.elastic4s.Indexable
-import io.circe.{Decoder, Encoder}
 import play.api.libs.json.JsObject
-import io.circe._
-import io.circe.generic.semiauto._
 
 
 
