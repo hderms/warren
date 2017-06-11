@@ -8,7 +8,7 @@ object RabbitAdmin {
   private val firehoseStop = "rabbitmqctl trace_off"
 
   object firehose {
-    def start = firehoseStart !
-    def stop = firehoseStop !
+    def start = firehoseStart.!
+    def stop = firehoseStop.!
   }
 }

@@ -5,6 +5,7 @@ import com.spingo.op_rabbit.RabbitControl
 import rabbitadmin.RabbitAdmin
 import sync.Sync
 import sync.db.Db.FireHoseDb
+import sync.db.reactive.Reactive
 
 object LoggingDecider {
   val decider: Supervision.Decider = { e =>
@@ -20,11 +21,8 @@ object Main extends App {
   implicit val materializer = ActorMaterializer(actorMaterializerSettings)(actorSystem)
   implicit val ec = materializer.executionContext
   val rabbitControl = actorSystem.actorOf(Props[RabbitControl])
-  val sync = new Sync(rabbitControl)(FireHoseDb.subscriber(actorSystem))
+  val sync = new Sync(rabbitControl)(Reactive.subscriber(FireHoseDb.client))
   RabbitAdmin.firehose.start
-  //FireHoseDb.init
   http.Service.builder.start.runAsync(x => println(x))
   sync.run { _ => RabbitAdmin.firehose.stop }
-
-  //Source.fromPublisher(FireHoseDb.publisher).log("found one").runWith(Sink.onComplete( _ => println("we finished")))
 }

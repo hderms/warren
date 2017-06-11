@@ -16,30 +16,21 @@ import scala.util.Try
 
 
 class Sync(rabbitControl: ActorRef)(subscriber: BulkIndexingSubscriber[FirehoseMessage])(implicit actorMaterializer: ActorMaterializer) extends RabbitDataFetchers {
+  implicit val recoveryStrategy = RecoveryStrategy.nack(false)
+
   val source =  RabbitSource(
     rabbitControl,
     channel(qos = 3),
-    consume(firehoseBinding),
+    consume(Bindings.firehose),
     body(as[JsObject])
       & property(Headers.ExchangeName)
       & property(Headers.RoutingKeys)
-      & extract(getAppId _)
-      & extract(getMessageId _)
-      & extract(getUserId _)
-      & extract(getCorrelationId _)
-      & extract(getHeaders _)
+      & extract(getAppId)
+      & extract(getMessageId)
+      & extract(getUserId)
+      & extract(getCorrelationId)
+      & extract(getHeaders)
   ).map{(FirehoseMessage.fromJavaHashMap _).tupled}
-  private val firehoseExchange = Exchange.passive("amq.rabbitmq.trace")
-
-
-  implicit val recoveryStrategy = RecoveryStrategy.nack(false)
-  private val firehoseBinding = Queue.passive(topic(queue(
-    "firehose",
-    durable = false,
-    exclusive = false,
-    autoDelete = true),
-    List("#"),
-    exchange = firehoseExchange))
 
   def run(callback: Try[Done] => Unit): SubscriptionRef =
     source
