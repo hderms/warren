@@ -73,7 +73,7 @@ class Sync(rabbitControl: ActorRef)(implicit actorMaterializer: ActorMaterialize
       & extract(getUserId _)
       & extract(getCorrelationId _)
       & extract(getHeaders _)
-  ).map{(FirehoseMessage.apply _).tupled}
+  ).map{(FirehoseMessage.fromJavaHashMap _).tupled}
 
 
   def run(callback: Try[Done] => Unit) =
