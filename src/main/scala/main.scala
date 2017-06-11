@@ -22,7 +22,10 @@ object Main extends App {
   implicit val ec = materializer.executionContext
   val rabbitControl = actorSystem.actorOf(Props[RabbitControl])
   val sync = new Sync(rabbitControl)(Reactive.subscriber(FireHoseDb.client))
+
   RabbitAdmin.firehose.start
+
   http.Service.builder.start.runAsync(x => println(x))
+
   sync.run { _ => RabbitAdmin.firehose.stop }
 }

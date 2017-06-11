@@ -11,7 +11,11 @@ import scala.concurrent.duration._
 import sync.db.FirehoseEncodings._
 import com.sksamuel.elastic4s.http.ElasticDsl._
 
+import scala.util.Properties
+
+
 object Reactive {
+  val defaultDuration = Properties.envOrElse("SEARCH_TIMEOUT_DURATION", "60").toInt.seconds
   val config = SubscriberConfig[FirehoseMessage](batchSize = 1, concurrentRequests = 5)
   implicit val builder = new RequestBuilder[FirehoseMessage] {
     def request(t: FirehoseMessage): BulkCompatibleDefinition = {
@@ -19,11 +23,13 @@ object Reactive {
     }
   }
 
+  /*
+   * @param
+   */
   def subscriber(client: HttpClient)(implicit sys: ActorSystem): BulkIndexingSubscriber[FirehoseMessage] = ReactiveElastic(client).subscriber[FirehoseMessage](config)
 
   def publisher(client: HttpClient)(implicit sys: ActorSystem) = client.publisher {
-    search("messages").query("exchange_name:amq*").scroll("1m").timeout(60.seconds)
-
+    search("messages").query("exchange_name:amq*").scroll("1m").timeout(defaultDuration)
   }
 }
 
