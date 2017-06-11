@@ -51,3 +51,6 @@ libraryDependencies ++= Seq(
 //convert future to task
 libraryDependencies += "io.verizon.delorean" %% "core" % "1.2.40-scalaz-7.1"
 
+
+//Settings
+target in Compile in doc := baseDirectory.value / "doc"
