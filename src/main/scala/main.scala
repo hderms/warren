@@ -1,5 +1,8 @@
+package warren
+
 import akka.actor.{ActorSystem, Props}
-import com.spingo.op_rabbit.RabbitControl
+import akka.stream.ActorMaterializer
+import com.spingo.op_rabbit.{RabbitControl, SubscriptionRef}
 import sync.Sync
 import rabbitadmin.RabbitAdmin
 /**
@@ -7,11 +10,11 @@ import rabbitadmin.RabbitAdmin
   */
 
 
-class Main extends App {
+object Main extends App {
   implicit val actorSystem = ActorSystem("such-system")
+  implicit val materializer = ActorMaterializer()(actorSystem)
   val rabbitControl = actorSystem.actorOf(Props[RabbitControl])
   val sync = new Sync(rabbitControl)
   RabbitAdmin.firehose.start
-  sync.run
-  RabbitAdmin.firehose.stop
+  val runRef: SubscriptionRef = sync.run{ _ => RabbitAdmin.firehose.stop}
 }
