@@ -25,14 +25,14 @@ libraryDependencies ++= Seq(
   "com.sksamuel.elastic4s" %% "elastic4s-core" % elastic4sVersion,
   // for the tcp client
   "com.sksamuel.elastic4s" %% "elastic4s-tcp" % elastic4sVersion,
-
-  // for the http client
+  //http
   "com.sksamuel.elastic4s" %% "elastic4s-http" % elastic4sVersion,
 
-  // if you want to use reactive streams
-  "com.sksamuel.elastic4s" %% "elastic4s-streams" % elastic4sVersion,
+  //Circe
+  "com.sksamuel.elastic4s" %% "elastic4s-circe" % elastic4sVersion,
 
   // testing
   "com.sksamuel.elastic4s" %% "elastic4s-testkit" % elastic4sVersion % "test",
   "com.sksamuel.elastic4s" %% "elastic4s-embedded" % elastic4sVersion % "test"
 )
+

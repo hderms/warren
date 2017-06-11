@@ -6,7 +6,7 @@ import akka.Done
 import akka.actor.ActorRef
 import akka.japi.Procedure
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.Sink
+import akka.stream.scaladsl.{Flow, Sink}
 import com.rabbitmq.client.AMQP.BasicProperties
 import com.spingo.op_rabbit.Directives._
 import com.spingo.op_rabbit.PlayJsonSupport._
@@ -23,7 +23,7 @@ import scala.util.Try
 /**
   * Created by rtuser on 6/10/17.
   */
-class Sync(rabbitControl: ActorRef)(implicit actorMaterializer: ActorMaterializer) {
+class Sync(rabbitControl: ActorRef)(extraFlow: Flow[FirehoseMessage, Boolean, Any])(implicit actorMaterializer: ActorMaterializer) {
   type OptionJavaHashMap[A, B] = Option[JavaHashMap[A, B]]
   type MaybeHeadersMap = Option[JavaHashMap[String, String]]
   private val firehoseExchange = Exchange.passive("amq.rabbitmq.trace")
@@ -79,6 +79,7 @@ class Sync(rabbitControl: ActorRef)(implicit actorMaterializer: ActorMaterialize
   def run(callback: Try[Done] => Unit) =
     source
       .acked
+      .via(extraFlow)
       .alsoTo(Sink.foreach(println _))
       .to(Sink.onComplete(callback))
       .run()
