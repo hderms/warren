@@ -1,9 +1,6 @@
 package rabbitadmin
-/**
-  * Created by rtuser on 6/10/17.
-  */
 
-import sys.process._
+import scala.sys.process._
 object RabbitAdmin {
 
 

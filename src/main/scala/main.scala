@@ -5,12 +5,8 @@ import com.spingo.op_rabbit.RabbitControl
 import rabbitadmin.RabbitAdmin
 import sync.Sync
 import sync.db.Db.FireHoseDb
-/**
-  * Created by rtuser on 6/10/17.
-  */
 
-
-  object LoggingDecider {
+object LoggingDecider {
   val decider: Supervision.Decider = { e =>
     println("Unhandled exception in stream", e)
     Supervision.Stop

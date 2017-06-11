@@ -1,10 +1,7 @@
 package sync
 
-import com.spingo.op_rabbit.properties.{Header, TypedHeader}
+import com.spingo.op_rabbit.properties.TypedHeader
 
-/**
-  * Created by rtuser on 6/10/17.
-  */
 object Headers {
     val ExchangeName = TypedHeader[String]("exchange_name")
 
