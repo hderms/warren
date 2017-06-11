@@ -1,11 +1,9 @@
 package sync.db
 
 import com.sksamuel.elastic4s.http.HttpClient
+
 import scala.concurrent.duration._
 
-/**
-  * Created by rtuser on 6/11/17.
-  */
 object MessageIndex {
   import com.sksamuel.elastic4s.http.ElasticDsl._
 

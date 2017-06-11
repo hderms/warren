@@ -1,7 +1,6 @@
 package sync
 
 
-import akka.Done
 import akka.actor.ActorRef
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
@@ -11,8 +10,6 @@ import com.spingo.op_rabbit.PlayJsonSupport._
 import com.spingo.op_rabbit._
 import com.spingo.op_rabbit.stream.RabbitSource
 import play.api.libs.json.JsObject
-
-import scala.util.Try
 
 
 class Sync(rabbitControl: ActorRef)(subscriber: BulkIndexingSubscriber[FirehoseMessage])(implicit actorMaterializer: ActorMaterializer) extends RabbitDataFetchers {
@@ -32,10 +29,9 @@ class Sync(rabbitControl: ActorRef)(subscriber: BulkIndexingSubscriber[FirehoseM
       & extract(getHeaders)
   ).map{(FirehoseMessage.fromJavaHashMap _).tupled}
 
-  def run(callback: Try[Done] => Unit): SubscriptionRef =
+  def run: SubscriptionRef =
     source
       .acked
-      .alsoTo(Sink.fromSubscriber(subscriber))
-      .to(Sink.onComplete(callback))
+      .to(Sink.fromSubscriber(subscriber))
       .run()
 }
