@@ -8,7 +8,7 @@ import play.api.libs.json.JsObject
 
 case class FirehoseMessage(body: JsObject,
   exchangeName: String,
-  routingKey: Seq[String],
+  routingKey: List[String],
   appId: Option[String],
   messageId: Option[String],
   userId: Option[String],
@@ -20,11 +20,12 @@ object FirehoseMessage{
   def fromJavaHashMap(body: JsObject, exchangeName: String, routingKey: Seq[String], appId: Option[String], messageId: Option[String], userId: Option[String],
     correlationId: Option[String],
     headers: Option[JavaHashMap[String, String]]) = {
+    println("in hash map")
 
     FirehoseMessage(
     body= body,
     exchangeName= exchangeName,
-    routingKey= routingKey,
+      routingKey = routingKey.toList,
     appId= appId,
     messageId= messageId,
     userId= userId,
